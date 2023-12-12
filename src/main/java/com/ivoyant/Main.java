@@ -31,7 +31,9 @@ public class Main {
             if (connection != null && !connection.isClosed()) {
                 System.out.println("Connection Successful");
                 while (true) {
-                    System.out.print("Please Select The Operation You Need To Perform : \n1. Show Tables\n2. Create Table\n3. Insert Data\n4. Display Data\n5. Delete Data\n6. Drop Table\n7. Close Connection And Exit\n");
+                    System.out.print("Please Select The Operation You Need To Perform : \n1. Show Tables\n" +
+                            "2. Create Table\n3. Insert Data\n4. Display Data\n5. Delete Data\n6. Drop Table\n" +
+                            "7. Close Connection And Exit\n");
                     int operationSelected = scanner.nextInt();
                     scanner.nextLine();
                     switch (operationSelected) {
