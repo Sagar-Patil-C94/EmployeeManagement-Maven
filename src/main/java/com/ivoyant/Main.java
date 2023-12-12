@@ -99,7 +99,7 @@ public class Main {
     public static void dropTable() {
         System.out.print("Enter Table Name To Drop : ");
         String tableName = scanner.nextLine();
-        if (DropTable.drop(connection, tableName) == 1) {
+        if (DropTable.drop(connection, tableName)) {
             System.out.println(tableName + " Dropped Successfully");
         } else {
             System.out.println(tableName + " Drop Not Successful");
