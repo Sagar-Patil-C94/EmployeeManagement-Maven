@@ -74,7 +74,7 @@ public class DatabaseOperations {
                 System.out.println("Connection Failed");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
         }
     }
 
@@ -98,7 +98,7 @@ public class DatabaseOperations {
                     System.out.println("Table Name : " + resultSet.getString(1));
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e.getLocalizedMessage());
             }
         }
     }
