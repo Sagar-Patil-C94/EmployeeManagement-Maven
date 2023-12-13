@@ -1,21 +1,42 @@
 package com.ivoyant;
 
+
+import com.ivoyant.mysql.ConnectionHandler;
+import com.ivoyant.mysql.DataOperations;
+import com.ivoyant.mysql.TableOperations;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
 
-public class MysqlDatabaseOperations {
+public class DatabaseOperations {
     Map<String, Connection> connectionMap = new HashMap<>();
     static Scanner scanner = new Scanner(System.in);
     private String key;
+    public String databaseType;
+
+    public void chooseDatabaseType() {
+        System.out.print("Please SQL Type\n1.MySQL\n2.Postgres : ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        switch (choice) {
+            case 1:
+                databaseType = "mysql";
+                connectionRequest();
+                break;
+            case 2:
+                databaseType = "postgresql";
+                connectionRequest();
+                break;
+            default:
+                System.out.println("Invalid choice");
+        }
+    }
 
     // Creating connection
     public void connectionRequest() {
-        System.out.println("Please Enter SQL Name");
-        String sqlName = scanner.nextLine();
         System.out.print("Please Enter Host Name : ");
         String hostName = scanner.nextLine();
         System.out.print("Please Enter Port Number : ");
@@ -31,7 +52,7 @@ public class MysqlDatabaseOperations {
         if (connectionMap.containsKey(key)) {
             System.out.println("Already Connected");
         } else {
-                connectionMap.put(key, ConnectionHandler.connect(hostName,sqlName, portNumber, databaseName, username, password));
+            connectionMap.put(key, ConnectionHandler.connect(hostName, databaseType, portNumber, databaseName, username, password));
         }
     }
 
@@ -99,11 +120,11 @@ public class MysqlDatabaseOperations {
 
     // Displaying Table
     public void showTables() {
-        ResultSet resultSet = TableOperations.showTables(connectionMap.get(key));
+        ResultSet resultSet = TableOperations.showTables(connectionMap.get(key), databaseType);
         if (resultSet != null) {
             try {
                 while (resultSet.next()) {
-                    System.out.println("Table Name : " + resultSet.getString(1));
+                    System.out.println("Table Name : " + resultSet.getString(2));
                 }
             } catch (Exception e) {
                 System.out.println(e.getLocalizedMessage());
