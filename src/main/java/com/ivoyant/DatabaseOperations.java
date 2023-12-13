@@ -5,11 +5,14 @@ import com.mysql.cj.xdevapi.Table;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class DatabaseOperations {
-    private Connection connection;
+    Map<String, Connection> connectionMap = new HashMap<>();
     static Scanner scanner = new Scanner(System.in);
+    private String key;
 
     // Creating connection
     public void connectionRequest() {
@@ -24,13 +27,18 @@ public class DatabaseOperations {
         String username = scanner.nextLine();
         System.out.print("Please Enter Password : ");
         String password = scanner.nextLine();
-        connection = ConnectionHandler.connect(hostName, portNumber, databaseName, username, password);
+        key = username + "_" + databaseName;
+        if (connectionMap.containsKey(key)) {
+            System.out.println("Already Connected");
+        } else {
+            connectionMap.put(key, ConnectionHandler.connect(hostName, portNumber, databaseName, username, password));
+        }
     }
 
     // Looping for operations
     public void performOperations() {
         try {
-            if (connection != null && !connection.isClosed()) {
+            if (connectionMap.get(key) != null && !connectionMap.get(key).isClosed()) {
                 System.out.println("Connection Successful");
                 while (true) {
                     System.out.print("Please Select The Operation You Need To Perform : \n1. Show Tables\n" +
@@ -58,10 +66,10 @@ public class DatabaseOperations {
                             dropTable();
                             break;
                         case 7:
-                            if (ConnectionHandler.disconnect(connection))
+                            if (ConnectionHandler.disconnect(connectionMap.get(key)))
                                 System.out.println("Disconnected\nThank You :)");
                             else {
-                                connection.close();
+                                connectionMap.get(key).close();
                                 System.out.println("Disconnected\nThank You :)");
                             }
                             return;
@@ -84,14 +92,14 @@ public class DatabaseOperations {
         String tableName = scanner.nextLine();
         System.out.print("Column Names With Datatypes And Constraints : ");
         String columnNames = scanner.nextLine();
-        if (TableOperations.createTable(connection, tableName, columnNames) == -1) {
+        if (TableOperations.createTable(connectionMap.get(key), tableName, columnNames) == -1) {
             System.out.println("Error Occured While Creating Table Named " + tableName);
         }
     }
 
     // Displaying Table
     public void showTables() {
-        ResultSet resultSet = TableOperations.showTables(connection);
+        ResultSet resultSet = TableOperations.showTables(connectionMap.get(key));
         if (resultSet != null) {
             try {
                 while (resultSet.next()) {
@@ -107,7 +115,7 @@ public class DatabaseOperations {
     public void dropTable() {
         System.out.print("Enter Table Name To Drop : ");
         String tableName = scanner.nextLine();
-        if (TableOperations.dropTable(connection, tableName)) {
+        if (TableOperations.dropTable(connectionMap.get(key), tableName)) {
             System.out.println(tableName + " Dropped Successfully");
         } else {
             System.out.println(tableName + " Drop Not Successful");
@@ -122,7 +130,7 @@ public class DatabaseOperations {
         String columns = scanner.nextLine();
         System.out.print("Enter Values List (Separated By ,): ");
         String values = scanner.nextLine();
-        int count = DataOperations.insertData(connection, tableName, columns, values);
+        int count = DataOperations.insertData(connectionMap.get(key), tableName, columns, values);
         if (count == -1) {
             System.out.println("Insertion UnSuccessful");
         } else {
@@ -136,7 +144,7 @@ public class DatabaseOperations {
         String columnList = scanner.nextLine();
         System.out.print("Enter Table Name : ");
         String tableName = scanner.nextLine();
-        ResultSet resultSet = DataOperations.displayData(connection, columnList, tableName);
+        ResultSet resultSet = DataOperations.displayData(connectionMap.get(key), columnList, tableName);
         if (resultSet != null) {
             try {
                 int columnCount = resultSet.getMetaData().getColumnCount();
@@ -168,12 +176,12 @@ public class DatabaseOperations {
         int deleteCount = -1;
         switch (option) {
             case 1:
-                deleteCount = DataOperations.deleteData(connection, tableName);
+                deleteCount = DataOperations.deleteData(connectionMap.get(key), tableName);
                 break;
             case 2:
                 System.out.print("Enter Where Condition : ");
                 String condition = scanner.nextLine();
-                deleteCount = DataOperations.deleteData(connection, tableName, condition);
+                deleteCount = DataOperations.deleteData(connectionMap.get(key), tableName, condition);
                 break;
             default:
                 System.out.println("Invalid Choice");
