@@ -1,22 +1,21 @@
 package com.ivoyant;
 
-import com.ivoyant.mysql.*;
-import com.mysql.cj.xdevapi.Table;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 
-public class DatabaseOperations {
+public class MysqlDatabaseOperations {
     Map<String, Connection> connectionMap = new HashMap<>();
     static Scanner scanner = new Scanner(System.in);
     private String key;
 
     // Creating connection
     public void connectionRequest() {
+        System.out.println("Please Enter SQL Name");
+        String sqlName = scanner.nextLine();
         System.out.print("Please Enter Host Name : ");
         String hostName = scanner.nextLine();
         System.out.print("Please Enter Port Number : ");
@@ -32,7 +31,7 @@ public class DatabaseOperations {
         if (connectionMap.containsKey(key)) {
             System.out.println("Already Connected");
         } else {
-            connectionMap.put(key, ConnectionHandler.connect(hostName, portNumber, databaseName, username, password));
+                connectionMap.put(key, ConnectionHandler.connect(hostName,sqlName, portNumber, databaseName, username, password));
         }
     }
 
