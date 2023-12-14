@@ -2,6 +2,7 @@ package com.ivoyant;
 
 
 import com.ivoyant.mysql.ConnectionHandler;
+import com.ivoyant.mysql.CustomLogger;
 import com.ivoyant.mysql.DataOperations;
 import com.ivoyant.mysql.TableOperations;
 
@@ -24,14 +25,17 @@ public class DatabaseOperations {
         switch (choice) {
             case 1:
                 databaseType = "mysql";
+                CustomLogger.info("User Selected " + databaseType);
                 connectionRequest();
                 break;
             case 2:
                 databaseType = "postgresql";
+                CustomLogger.info("User Selected " + databaseType);
                 connectionRequest();
                 break;
             default:
-                System.out.println("Invalid choice");
+                CustomLogger.error("User Selected Invalid Option");
+//                System.out.println("Invalid choice");
         }
     }
 
@@ -50,9 +54,11 @@ public class DatabaseOperations {
         String password = scanner.nextLine();
         key = username + "_" + databaseName;
         if (connectionMap.containsKey(key)) {
-            System.out.println("Already Connected");
+            CustomLogger.warn("Connection Already Present!!!");
+//            System.out.println("Already Connected");
         } else {
             connectionMap.put(key, ConnectionHandler.connect(hostName, databaseType, portNumber, databaseName, username, password));
+            CustomLogger.info("Connection Established!!!");
         }
     }
 
@@ -60,12 +66,14 @@ public class DatabaseOperations {
     public void performOperations() {
         try {
             if (connectionMap.get(key) != null && !connectionMap.get(key).isClosed()) {
-                System.out.println("Connection Successful");
+//                System.out.println("Connection Successful");
                 while (true) {
                     System.out.print("Please Select The Operation You Need To Perform : \n1. Show Tables\n" +
                             "2. Create Table\n3. Insert Data\n4. Display Data\n5. Delete Data\n6. Drop Table\n" +
                             "7. Close Connection And Exit\n");
+                    CustomLogger.warn("Only Integer is Accepted");
                     int operationSelected = scanner.nextInt();
+                    CustomLogger.info("User Selected Option " + operationSelected);
                     scanner.nextLine();
                     switch (operationSelected) {
                         case 1:
@@ -87,20 +95,24 @@ public class DatabaseOperations {
                             dropTable();
                             break;
                         case 7:
-                            if (ConnectionHandler.disconnect(connectionMap.get(key)))
+                            if (ConnectionHandler.disconnect(connectionMap.get(key))) {
+                                CustomLogger.info("Disconnecting...!!!");
                                 System.out.println("Disconnected\nThank You :)");
-                            else {
+                            } else {
+                                CustomLogger.info("Disconnecting...!!!");
                                 connectionMap.get(key).close();
                                 System.out.println("Disconnected\nThank You :)");
                             }
                             return;
                         default:
-                            System.out.println("Invalid Operation Chosen...");
+                            CustomLogger.error("User Selected Invalid Option");
+//                            System.out.println("Invalid Operation Chosen...");
                             break;
                     }
                 }
             } else {
-                System.out.println("Connection Failed");
+                CustomLogger.error("Unable To Establish Function...!!!");
+//                System.out.println("Connection Failed");
             }
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
@@ -111,10 +123,12 @@ public class DatabaseOperations {
     public void createTable() {
         System.out.print("Table Name : ");
         String tableName = scanner.nextLine();
+        CustomLogger.info("User Selected Table " + tableName);
         System.out.print("Column Names With Datatypes And Constraints : ");
         String columnNames = scanner.nextLine();
         if (TableOperations.createTable(connectionMap.get(key), tableName, columnNames) == -1) {
-            System.out.println("Error Occured While Creating Table Named " + tableName);
+            CustomLogger.error("Error Occured While Creating Table Named " + tableName);
+//            System.out.println("Error Occured While Creating Table Named " + tableName);
         }
     }
 
@@ -123,11 +137,18 @@ public class DatabaseOperations {
         ResultSet resultSet = TableOperations.showTables(connectionMap.get(key), databaseType);
         if (resultSet != null) {
             try {
+                CustomLogger.info("Displaying Tables!!!");
+                int columnIndex;
+                if (databaseType == "mysql")
+                    columnIndex = 1;
+                else
+                    columnIndex = 2;
                 while (resultSet.next()) {
-                    System.out.println("Table Name : " + resultSet.getString(2));
+                    System.out.println("Table Name : " + resultSet.getString(columnIndex));
                 }
             } catch (Exception e) {
-                System.out.println(e.getLocalizedMessage());
+                CustomLogger.error(e.getLocalizedMessage());
+//                System.out.println(e.getLocalizedMessage());
             }
         }
     }
@@ -136,10 +157,13 @@ public class DatabaseOperations {
     public void dropTable() {
         System.out.print("Enter Table Name To Drop : ");
         String tableName = scanner.nextLine();
+        CustomLogger.warn("Droping " + tableName);
         if (TableOperations.dropTable(connectionMap.get(key), tableName)) {
-            System.out.println(tableName + " Dropped Successfully");
+            CustomLogger.info(tableName + " Dropped Successfully");
+//            System.out.println(tableName + " Dropped Successfully");
         } else {
-            System.out.println(tableName + " Drop Not Successful");
+            CustomLogger.error(tableName + " Drop Not Successful");
+//            System.out.println(tableName + " Drop Not Successful");
         }
     }
 
@@ -153,18 +177,20 @@ public class DatabaseOperations {
         String values = scanner.nextLine();
         int count = DataOperations.insertData(connectionMap.get(key), tableName, columns, values);
         if (count == -1) {
-            System.out.println("Insertion UnSuccessful");
+            CustomLogger.error("Insertion UnSuccessful");
+//            System.out.println("Insertion UnSuccessful");
         } else {
-            System.out.println("Inserted " + count + " Rows Successfully.");
+            CustomLogger.info("Inserted " + count + " Rows Successfully.");
+//            System.out.println("Inserted " + count + " Rows Successfully.");
         }
     }
 
     // Display Data
     public void displayData() {
-        System.out.print("Enter Column List : ");
-        String columnList = scanner.nextLine();
         System.out.print("Enter Table Name : ");
         String tableName = scanner.nextLine();
+        System.out.print("Enter Column List : ");
+        String columnList = scanner.nextLine();
         ResultSet resultSet = DataOperations.displayData(connectionMap.get(key), columnList, tableName);
         if (resultSet != null) {
             try {
@@ -180,10 +206,12 @@ public class DatabaseOperations {
                     System.out.println();
                 }
             } catch (Exception e) {
-                System.out.println(e.getLocalizedMessage());
+                CustomLogger.error(e.getLocalizedMessage());
+//                System.out.println(e.getLocalizedMessage());
             }
         } else {
-            System.out.println("Error Occured During Fetching Data!!");
+            CustomLogger.error("Error Occured During Fetching Data!!");
+//            System.out.println("Error Occured During Fetching Data!!");
         }
     }
 
@@ -194,6 +222,7 @@ public class DatabaseOperations {
         scanner.nextLine();
         System.out.print("Enter Table Name : ");
         String tableName = scanner.nextLine();
+        CustomLogger.warn("Deleting From " + tableName);
         int deleteCount = -1;
         switch (option) {
             case 1:

@@ -1,0 +1,23 @@
+14:01:21.521 [main] ERROR com.ivoyant.mysql.ConnectionHandler - This is an error message
+14:02:33.276 [main] ERROR com.ivoyant.mysql.ConnectionHandler - This is an error message
+14:10:22.556 [main] ERROR com.ivoyant.mysql.CustomLogger - Enterees
+14:12:47.516 [main] ERROR com.ivoyant.mysql.CustomLogger - Enterees
+14:19:20.144 [main] INFO  com.ivoyant.mysql.CustomLogger - Starting Employee Management System.....
+14:33:45.769 [main] INFO  com.ivoyant.mysql.CustomLogger - Starting Employee Management System.....
+14:33:57.932 [main] INFO  com.ivoyant.mysql.CustomLogger - User Selected mysql
+14:34:34.558 [main] INFO  com.ivoyant.mysql.CustomLogger - Enterees
+14:34:34.952 [main] INFO  com.ivoyant.mysql.CustomLogger - Connection Established!!!
+14:34:34.952 [main] WARN  com.ivoyant.mysql.CustomLogger - Only Integer is Accepted
+14:34:45.261 [main] INFO  com.ivoyant.mysql.CustomLogger - User Selected Option 1
+14:34:45.336 [main] INFO  com.ivoyant.mysql.CustomLogger - Displaying Tables!!!
+14:34:45.339 [main] ERROR com.ivoyant.mysql.CustomLogger - Column Index out of range, 2 > 1. 
+14:34:45.339 [main] WARN  com.ivoyant.mysql.CustomLogger - Only Integer is Accepted
+14:42:54.618 [main] INFO  com.ivoyant.mysql.CustomLogger - Starting Employee Management System.....
+14:42:56.877 [main] INFO  com.ivoyant.mysql.CustomLogger - User Selected mysql
+14:43:11.953 [main] INFO  com.ivoyant.mysql.CustomLogger - Connection Established!!!
+14:43:11.953 [main] WARN  com.ivoyant.mysql.CustomLogger - Only Integer is Accepted
+14:43:19.831 [main] INFO  com.ivoyant.mysql.CustomLogger - User Selected Option 1
+14:43:19.876 [main] INFO  com.ivoyant.mysql.CustomLogger - Displaying Tables!!!
+14:43:19.877 [main] WARN  com.ivoyant.mysql.CustomLogger - Only Integer is Accepted
+14:45:11.439 [main] INFO  com.ivoyant.mysql.CustomLogger - User Selected Option 7
+14:45:11.451 [main] INFO  com.ivoyant.mysql.CustomLogger - Disconnecting...!!!
